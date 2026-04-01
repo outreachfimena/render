@@ -1,7 +1,8 @@
-import os
+import requests
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 
 app = FastAPI(title="LinkedIn Proxy")
@@ -41,9 +42,6 @@ async def linkedin_callback(code: Optional[str] = None, state: Optional[str] = N
 
 @app.post("/invitations")
 async def send_invitation(payload: InvitationRequest):
-    # TODO:
-    # Replace this mock response with the real LinkedIn API call
-    # after your app gets approved for the needed permissions.
     return {
         "success": True,
         "action": "invitation_created",
@@ -55,9 +53,6 @@ async def send_invitation(payload: InvitationRequest):
 
 @app.post("/messages")
 async def send_message(payload: MessageRequest):
-    # TODO:
-    # Replace this mock response with the real LinkedIn API call
-    # after your app gets approved for the needed permissions.
     return {
         "success": True,
         "action": "message_sent",
@@ -69,10 +64,21 @@ async def send_message(payload: MessageRequest):
 
 @app.get("/acceptance-status")
 async def acceptance_status(profileUrl: str):
-    # TODO:
-    # Replace with a real LinkedIn lookup when your API access is approved.
     return {
         "profile_url": profileUrl,
         "status": "accepted",
         "note": "Mock response for now.",
     }
+
+
+@app.get("/li-click-stop")
+async def li_click_stop(lead_key: str):
+    n8n_webhook = "https://workflow.foundercapital.vc/webhook/li-click-tracking"
+    redirect_url = "https://calendly.com/foundercapital/15min"
+
+    try:
+        requests.get(n8n_webhook, params={"lead_key": lead_key}, timeout=5)
+    except Exception:
+        pass
+
+    return RedirectResponse(url=redirect_url, status_code=302)
