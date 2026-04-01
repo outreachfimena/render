@@ -1,5 +1,6 @@
-import requests
 from typing import Optional
+from urllib.parse import urlencode
+from urllib.request import urlopen
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import RedirectResponse
@@ -77,7 +78,8 @@ async def li_click_stop(lead_key: str):
     redirect_url = "https://calendly.com/foundercapital/15min"
 
     try:
-        requests.get(n8n_webhook, params={"lead_key": lead_key}, timeout=5)
+        query = urlencode({"lead_key": lead_key})
+        urlopen(f"{n8n_webhook}?{query}", timeout=5)
     except Exception:
         pass
 
