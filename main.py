@@ -74,7 +74,7 @@ async def acceptance_status(profileUrl: str):
 
 @app.get("/li-click-stop")
 async def li_click_stop(lead_key: str):
-    n8n_webhook = "https://workflow.foundercapital.vc/webhook-test/li-click-tracking"
+    n8n_webhook = "https://workflow.foundercapital.vc/webhook/li-click-tracking"
     redirect_url = "https://calendly.com/foundercapital/15min"
 
     try:
